@@ -13,4 +13,8 @@ export class AppController {
   getTokenBalance(): any {
     return this.appService.getTokenBalance();
   }
+  @Get('tokenBalance2')
+  getTokenBalance2(): any {
+    return this.appService.getTokenBalance2();
+  }
 }
