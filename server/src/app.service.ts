@@ -29,6 +29,14 @@ const dev = {
   chainID: 'cube_47-5',
 };
 
+const covertBalances = (el) => {
+  return Math.round((parseFloat(el) / Math.pow(10, 6)) * 100) / 100;
+};
+
+const covertBalancesXpla = (el) => {
+  return Math.round((parseFloat(el) / Math.pow(10, 18)) * 100) / 100;
+};
+
 async function getXplaTokenBalance() {
   const gasPrices = await axios('https://cube-fcd.xpla.dev/v1/txs/gas_prices');
   const gasPricesCoins = new Coins(gasPrices.data);
@@ -39,70 +47,29 @@ async function getXplaTokenBalance() {
     gasPrices: gasPricesCoins,
     gasAdjustment: '1.5',
   });
-  const myAddress = 'xpla1rtud563g983fspg00k4k27y5j82w8tcr0v4tvs';
-
   const addresses = [
-    'xpla1cm53j8kyvrt6frxzarwxqz8rw4ls7shwgym2mx',
-    'xpla1asvgm5x6dm2k2m59pu6t750l0eqswddh8pjulqwe3kvk25tz9g4q640zex',
-    'xpla1vk7v6qvmxflnhggs6q2jzf8vhjyeansv579t2n',
-    'xpla1qxfrqlf8tpz532w0t5gz76ud4qg398xrr29r65',
-    'xpla124tapgv8wsn5t3rv2cvywh4ckkmj6mc6fkya005qjmshnzewwm9qavng3e',
+    'xpla18a8yfa7hw0y5h0lfdcrddh98tzawv3yz8cqhkl4f50wqe2u4m33smrdu93',
+    'xpla1cdty03fzqzqpkvf4zpmpl9rnlffjeey7fa5n47',
+    'xpla1g8hkzkgfa3uq0cg9d6h99jk5nlg92lwx2jme2l',
+    'xpla12xxryljjxarwgycjejf7ssrupaj78nmq8kccz6',
+    'xpla1c8yt309fq0shhfpvpf9yrz75nz95wkwcqs0us06d739vdcc4f6fsftqhkg',
   ];
 
   const balances = await Promise.all(
     addresses.map(async (address) => {
       const [balance] = await lcd.bank.balance(address);
       if (balance.toData()[0] === undefined) {
-        return '0';
+        return { walletAddress: address, balances: 0 };
       } else {
-        return balance.toData()[0].amount;
+        return {
+          walletAddress: address,
+          balances: covertBalancesXpla(balance.toData()[0].amount),
+        };
       }
     }),
   );
 
-  const results = balances.map((balance) => {
-    const result =
-      Math.round((parseFloat(balance) / Math.pow(10, 18)) * 100) / 100;
-    return result;
-  });
-
-  const tokens = [
-    {
-      tokenName: 'ELX',
-      tokenAddress:
-        'xpla1hz3svgdhmv67lsqlduu0tcnd3f75c0xr0mu48l6ywuwlz43zssjqc0z2h4',
-      walletAddress: 'xpla1kq4cdqvdsz5a3sznh2nn4sah6z44gdj0wf5xc3',
-    },
-    {
-      tokenName: 'CTXT',
-      tokenAddress:
-        'xpla1r57m20afwdhkwy67520p8vzdchzecesmlmc8k8w2z7t3h9aevjvs35x4r5',
-      walletAddress: 'xpla1tllq2ej243um8l5wg620s8pupnh4zs4a8n62rj',
-    },
-    {
-      tokenName: 'LCT',
-      tokenAddress:
-        'xpla1ddstvl38skwpm284gfaqukn3e8c4mlf26mssy5hppeq6ar2nnw0sr8vh6m',
-      walletAddress: 'xpla1g8hkzkgfa3uq0cg9d6h99jk5nlg92lwx2jme2l',
-    },
-    {
-      tokenName: 'CST',
-      tokenAddress:
-        'xpla1hdnu502uecmddk9w48kxvekgp43mjdpr3mza9kj2tfvjpgef5grszl8rur',
-      walletAddress: 'xpla12svc9dd4wjz4elm6jfpm0u75q3saf46ruq6gzq',
-    },
-  ];
-
-  for (const { tokenAddress, walletAddress } of tokens) {
-    const response = await lcd.wasm.contractQuery(tokenAddress, {
-      balance: { address: walletAddress },
-    });
-    console.log(
-      `Token: ${tokenAddress}, Wallet: ${walletAddress}, Balance: ${response['balance']}`,
-    );
-  }
-
-  return results;
+  return balances;
 }
 
 async function getXplaTokenBalance2() {
@@ -113,25 +80,51 @@ async function getXplaTokenBalance2() {
       tokenName: 'ELX',
       tokenAddress:
         'xpla1hz3svgdhmv67lsqlduu0tcnd3f75c0xr0mu48l6ywuwlz43zssjqc0z2h4',
-      walletAddress: 'xpla1kq4cdqvdsz5a3sznh2nn4sah6z44gdj0wf5xc3',
+      walletAddress:
+        'xpla18a8yfa7hw0y5h0lfdcrddh98tzawv3yz8cqhkl4f50wqe2u4m33smrdu93',
     },
     {
-      tokenName: 'CTXT',
+      tokenName: 'ELX',
       tokenAddress:
-        'xpla1r57m20afwdhkwy67520p8vzdchzecesmlmc8k8w2z7t3h9aevjvs35x4r5',
-      walletAddress: 'xpla1tllq2ej243um8l5wg620s8pupnh4zs4a8n62rj',
+        'xpla1hz3svgdhmv67lsqlduu0tcnd3f75c0xr0mu48l6ywuwlz43zssjqc0z2h4',
+      walletAddress: 'xpla1cdty03fzqzqpkvf4zpmpl9rnlffjeey7fa5n47',
     },
     {
-      tokenName: 'LCT',
+      tokenName: 'ELX',
       tokenAddress:
-        'xpla1ddstvl38skwpm284gfaqukn3e8c4mlf26mssy5hppeq6ar2nnw0sr8vh6m',
+        'xpla1hz3svgdhmv67lsqlduu0tcnd3f75c0xr0mu48l6ywuwlz43zssjqc0z2h4',
       walletAddress: 'xpla1g8hkzkgfa3uq0cg9d6h99jk5nlg92lwx2jme2l',
     },
     {
-      tokenName: 'CST',
+      tokenName: 'ELX',
       tokenAddress:
-        'xpla1hdnu502uecmddk9w48kxvekgp43mjdpr3mza9kj2tfvjpgef5grszl8rur',
-      walletAddress: 'xpla12svc9dd4wjz4elm6jfpm0u75q3saf46ruq6gzq',
+        'xpla1hz3svgdhmv67lsqlduu0tcnd3f75c0xr0mu48l6ywuwlz43zssjqc0z2h4',
+      walletAddress: 'xpla12xxryljjxarwgycjejf7ssrupaj78nmq8kccz6',
+    },
+    {
+      tokenName: 'ELX',
+      tokenAddress:
+        'xpla1hz3svgdhmv67lsqlduu0tcnd3f75c0xr0mu48l6ywuwlz43zssjqc0z2h4',
+      walletAddress:
+        'xpla1c8yt309fq0shhfpvpf9yrz75nz95wkwcqs0us06d739vdcc4f6fsftqhkg',
+    },
+    {
+      tokenName: 'ELX',
+      tokenAddress:
+        'xpla1hz3svgdhmv67lsqlduu0tcnd3f75c0xr0mu48l6ywuwlz43zssjqc0z2h4',
+      walletAddress: 'xpla1q4xns7eu3z8u3acj4nd8za3nz3xvz7wcm73cp0',
+    },
+    {
+      tokenName: 'ELX',
+      tokenAddress:
+        'xpla1hz3svgdhmv67lsqlduu0tcnd3f75c0xr0mu48l6ywuwlz43zssjqc0z2h4',
+      walletAddress: 'xpla1u8kz9gdkepcdtugf0pn0dy8c2zkadpnzq5rsj8',
+    },
+    {
+      tokenName: 'ELX',
+      tokenAddress:
+        'xpla1hz3svgdhmv67lsqlduu0tcnd3f75c0xr0mu48l6ywuwlz43zssjqc0z2h4',
+      walletAddress: 'xpla1m7e4yy2kr8y9efdg36y2hsu5etyucj222ywy6j',
     },
   ];
 
@@ -148,17 +141,12 @@ async function getXplaTokenBalance2() {
         balance: { address: walletAddress },
       });
       if (response['balance'] === undefined) {
-        return '0';
+        return { walletAddress, balances: 0 };
       } else {
-        return response['balance'];
+        return { walletAddress, balances: covertBalances(response['balance']) };
       }
     }),
   );
 
-  const results = balances.map((balance) => {
-    const result =
-      Math.round((parseFloat(balance) / Math.pow(10, 6)) * 100) / 100;
-    return result;
-  });
-  return results;
+  return balances;
 }
