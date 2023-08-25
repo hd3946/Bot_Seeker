@@ -14,7 +14,7 @@ $(function () {
             item.firstName
           }</td>
           <td class="editable-cell" data-field="firstName">${item.lastName}</td>
-          <td class="amount-${item.id}">${item.amount.toFixed(6)} ${
+          <td class="amount-${item.id}">${item.amount.toFixed(3)} ${
           item.currency
         }</td>
         `;
@@ -51,9 +51,10 @@ $(function () {
           <td style="color: red; width: 6rem">${item.walletAddress}</td>
           <td>${item.firstName}</td>
           <td>${item.lastName}</td>
-          <td class="amount-${item.id}">${item.amount.toFixed(6)} ${
-          item.currency
-        }</td>
+          <td class="amount-${item.id}">${item.amount.toFixed(3)}
+          <Image src="https://assets.xpla.io/icon/ELX.png" width="20px" height="20px" style="margin-left: 5px; margin-bottom: 5px;"/>
+          ${item.currency}
+          </td>
         `;
         tbody_token.appendChild(row);
       });
@@ -121,7 +122,7 @@ $(function () {
         firstName: "Marketing",
         lastName: "None",
         amount: 0,
-        currency: "CTXT",
+        currency: "ELX",
       },
       {
         id: 3,
@@ -129,7 +130,7 @@ $(function () {
         firstName: "User",
         lastName: "None",
         amount: 0,
-        currency: "LCT",
+        currency: "ELX",
       },
       {
         id: 4,
@@ -137,21 +138,21 @@ $(function () {
         firstName: "Team",
         lastName: "None",
         amount: 0,
-        currency: "CST",
+        currency: "ELX",
       },
       {
         id: 5,
-        walletAddress: "xpla1cc4cw53vp82slkvn7kku9xd4zjlykptehtzwzx",
+        walletAddress: "xpla1ljen03a3zxya70cp9u2wyqxyypg82ttcuhhgav",
         firstName: "Partner",
         lastName: "None",
         amount: 0,
-        currency: "BST",
+        currency: "ELX",
       },
     ];
 
-    const balanceUrl = "http://localhost:4000/tokenBalance";
-    const tokenUrl = "http://localhost:4000/tokenBalance2";
-    fetchDataAndPopulateTable(balanceUrl, data, "xpla");
+    const xplaUrl = "https://discord.gemhub.net/tokenBalance";
+    const tokenUrl = "https://discord.gemhub.net/tokenBalance2";
+    fetchDataAndPopulateTable(xplaUrl, data, "xpla");
     fetchDataAndPopulateTable(tokenUrl, data2, "token");
   });
   async function fetchDataAndPopulateTable(url, dataArray, type) {
@@ -162,7 +163,12 @@ $(function () {
       console.log("data", result);
 
       const updatedDataArray = result.map((item, index) => {
-        return { ...dataArray[index], amount: item };
+        return {
+          ...dataArray[index],
+          amount: item.balances,
+          id: index + 1,
+          walletAddress: item.walletAddress,
+        };
       });
 
       populateTable(updatedDataArray, type);
