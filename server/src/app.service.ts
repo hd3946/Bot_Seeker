@@ -123,7 +123,7 @@ async function getXplaTokenBalance2() {
     {
       tokenName: 'ELX',
       tokenAddress:
-        'xpla1hz3svgdhmv67lsqlduu0tcnd3f75c0xr0mu48l6ywuwlz43zssjqc0z2h4',
+        'xpla1up07dctjqud4fns75cnpejr4frmjtddzsmwgcktlyxd4zekhwecqtcfwjd',
       walletAddress: 'xpla1m7e4yy2kr8y9efdg36y2hsu5etyucj222ywy6j',
     },
   ];
